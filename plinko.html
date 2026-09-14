@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RAJEbait Plinko</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="brand-wrap">
+        <div class="brand-icon">✦</div>
+        <div>
+          <div class="brand-kicker">RAJEbait Studios</div>
+          <h1>Plinko</h1>
+        </div>
+      </div>
+      <div class="bank-wrap">
+        <div class="bank-label">Bankroll</div>
+        <div class="bank-value" id="bankroll">500 RAJES</div>
+      </div>
+    </header>
+
+    <main class="game-card">
+      <section class="table-top">
+        <div class="game-status">
+          <div class="status-chip" id="roundBadge">Plinko</div>
+          <div class="status-text" id="statusText">Drop your RAJES</div>
+          <div class="lock-state unlocked" id="lockState">Wallet ready</div>
+        </div>
+
+        <div class="bet-controls">
+          <div class="bet-title-wrap">
+            <label class="bet-label" for="plinkoBetInput">Bet</label>
+          </div>
+
+          <div class="bet-input-group">
+            <div class="bet-stepper">
+              <button class="icon-button" id="minusBtn" aria-label="Lower bet">−</button>
+
+              <div class="bet-display-wrap">
+                <input type="number" id="plinkoBetInput" min="25" max="250" value="50" />
+                <div class="bet-display" id="plinkoBetDisplay">50 RAJES</div>
+              </div>
+
+              <button class="icon-button" id="plusBtn" aria-label="Raise bet">+</button>
+            </div>
+
+            <div class="step-wrap">
+              <label class="step-label" for="plinkoStepInput">Step</label>
+              <input type="number" id="plinkoStepInput" min="1" value="25" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="game-board plinko-board">
+        <section class="plinko-frame">
+          <div class="plinko-scene">
+            <canvas id="plinkoCanvas" width="900" height="450"></canvas>
+          </div>
+        </section>
+
+        <section class="plinko-side">
+          <div class="plinko-score-panel">
+            <div class="panel-title">
+              <span>Prize</span>
+              <span class="score" id="plinkoPrize">25</span>
+            </div>
+            <div class="panel-title">
+              <span>Last Drop</span>
+              <span class="score" id="plinkoDropBin">0</span>
+            </div>
+          </div>
+
+          <div class="plinko-controls">
+            <button class="control-button primary-button" id="dropBtn">Drop</button>
+            <button class="control-button" id="clearBtn">Clear</button>
+          </div>
+        </section>
+      </section>
+
+      <section class="game-log-wrap">
+        <div class="log-title">Table Log</div>
+        <div class="game-log" id="gameLog">
+          <div class="log-item">Welcome to Plinko.</div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="game-system.js"></script>
+  <script src="plinko.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+# OS and editor artifacts
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Local environment/debug output
+*.log
