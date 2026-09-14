@@ -8,7 +8,10 @@ quotes = [
     "A Buccaneer is never alone.",
     "You are an academic superstar.",
     "Don't forget that Bucky loves you!",
-    "You are COUNTRY DAY READY!"
+    "You are COUNTRY DAY READY!",
+    "A Buccaneer is always at the forefront.",
+    "You are a hero in the eyes of the entire Lower School.",
+    "Nobody else can bucaneer quite like you."
 
 ]
 
