@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RAJEbait Studios</title>
+    <meta
+      name="description"
+      content="Minimal game center home page for RAJEbait Studios."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar container">
+        <a class="brand-link" href="index.html" aria-label="RAJEbait Studios home page">
+          <div class="brand-wrap">
+            <div class="brand-mark">R</div>
+            <div class="brand-copy">
+              <span class="brand-name">RAJEbait</span>
+              <span class="brand-sub">STUDIOS</span>
+            </div>
+          </div>
+        </a>
+
+        <nav class="main-nav" aria-label="Main navigation">
+          <a href="#featured">Featured</a>
+          <a href="#categories">Categories</a>
+          <a href="games.html">Games</a>
+        </nav>
+
+        <div class="header-actions">
+          <div class="balance-pill" aria-live="polite">
+            <span>1000</span>
+            <small>RAJE's</small>
+          </div>
+          <button id="restoreBalanceButton" class="ghost-btn" type="button" disabled>Restore +100</button>
+          <button id="signInButton" class="ghost-btn" type="button">Sign in</button>
+          <button id="playNowButton" class="primary-btn" type="button">Play now</button>
+        </div>
+      </header>
+
+      <main class="container page-content">
+        <section class="hero" id="featured">
+          <div class="hero-copy">
+            <p class="eyebrow">game center</p>
+            <h1>RAJEbait Studios</h1>
+            <p class="subtitle">Arcade · Gambling · Logic</p>
+          </div>
+
+          <aside class="user-panel" id="userPanel">
+            <p class="panel-label">Player</p>
+            <div id="accountSummary">Not signed in</div>
+          </aside>
+        </section>
+
+        <section id="categories" class="categories">
+          <div class="section-title">
+            <p class="eyebrow">browse</p>
+            <h2>Categories</h2>
+          </div>
+
+          <div class="category-grid">
+            <button class="category-card accent-one" type="button" data-category="Games">
+              <span class="icon">🎮</span>
+              <h3>Games</h3>
+              <small>Action · Racing · Arena</small>
+            </button>
+
+            <button class="category-card accent-two" type="button" data-category="Gambling">
+              <span class="icon">🎲</span>
+              <h3>Gambling</h3>
+              <small>Lucky draws · Tables</small>
+            </button>
+
+            <button class="category-card accent-three" type="button" data-category="Puzzles & Logic">
+              <span class="icon">🧠</span>
+              <h3>Puzzles</h3>
+              <small>Logic · Memory · Strategy</small>
+            </button>
+          </div>
+        </section>
+
+        <section class="featured">
+          <div class="section-title">
+            <p class="eyebrow">featured</p>
+            <h2>Trending</h2>
+          </div>
+
+          <div class="feature-row">
+            <button class="feature-card" type="button" data-game="Pixel Sprint" data-category="Games">
+              <span class="tag">Arcade</span>
+              <h3>Pixel Sprint</h3>
+              <small>Fast reflex play</small>
+            </button>
+
+            <button class="feature-card danger" type="button" data-game="Lucky Break" data-category="Gambling">
+              <span class="tag">Lucky</span>
+              <h3>Lucky Break</h3>
+              <small>High stakes rounds</small>
+            </button>
+
+            <button class="feature-card success" type="button" data-game="Cipher Maze" data-category="Puzzles & Logic">
+              <span class="tag">Logic</span>
+              <h3>Cipher Maze</h3>
+              <small>Pattern challenge</small>
+            </button>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div id="authModal" class="modal hidden" aria-hidden="true">
+      <div class="modal-card">
+        <button id="closeModal" class="close-btn" type="button" aria-label="Close sign in">×</button>
+        <p class="eyebrow">account</p>
+        <h2>Sign in</h2>
+        <form id="authForm">
+          <label>
+            <span>Username</span>
+            <input id="usernameInput" type="text" maxlength="24" placeholder="Enter a username" required />
+          </label>
+          <label>
+            <span>Password</span>
+            <input id="passwordInput" type="password" maxlength="24" placeholder="Enter a password" required />
+          </label>
+          <button class="primary-btn full-width" type="submit">Continue</button>
+        </form>
+        <p id="authMessage" class="auth-message" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
