@@ -33,20 +33,58 @@
         </nav>
 
         <div class="header-actions">
+          <div class="balance-pill" aria-live="polite">
+            <span>1000</span>
+            <small>RAJE's</small>
+          </div>
+          <button id="restoreBalanceButton" class="ghost-btn" type="button" disabled>Restore +100</button>
           <button id="signInButton" class="ghost-btn" type="button">Sign in</button>
           <button id="playNowButton" class="primary-btn" type="button">Play now</button>
         </div>
       </header>
 
-      <main class="container empty-page">
-        <section class="empty-state" aria-live="polite">
-          <p class="eyebrow">collection</p>
-          <h1>No games added yet</h1>
-          <p>This page is intentionally empty so new titles can be added later.</p>
-          <div class="empty-actions">
-            <a class="primary-btn" href="index.html">Back home</a>
-            <button class="secondary-btn" id="browseCategoriesBtn" type="button">Browse categories</button>
+      <main class="container games-page">
+        <section class="game-layout">
+          <div class="game-shell" aria-live="polite">
+            <div class="game-header">
+              <div>
+                <p class="eyebrow">game room</p>
+                <h1>Tic Tac Toe</h1>
+              </div>
+              <button id="tttReset" class="secondary-btn" type="button">New round</button>
+            </div>
+
+            <div class="ttt-mode-row">
+              <button id="tttModeComputer" class="ttt-mode-btn active" type="button">vs Computer</button>
+              <button id="tttModeTwoPlayer" class="ttt-mode-btn" type="button">2 Players</button>
+            </div>
+
+            <div id="tttStatus" class="game-status">Player X starts</div>
+
+            <div id="ticTacToeBoard" class="tic-tac-toe-board" role="grid" aria-label="Tic Tac Toe board">
+              <button class="ttt-cell" type="button" data-index="0" aria-label="Cell 1"></button>
+              <button class="ttt-cell" type="button" data-index="1" aria-label="Cell 2"></button>
+              <button class="ttt-cell" type="button" data-index="2" aria-label="Cell 3"></button>
+              <button class="ttt-cell" type="button" data-index="3" aria-label="Cell 4"></button>
+              <button class="ttt-cell" type="button" data-index="4" aria-label="Cell 5"></button>
+              <button class="ttt-cell" type="button" data-index="5" aria-label="Cell 6"></button>
+              <button class="ttt-cell" type="button" data-index="6" aria-label="Cell 7"></button>
+              <button class="ttt-cell" type="button" data-index="7" aria-label="Cell 8"></button>
+              <button class="ttt-cell" type="button" data-index="8" aria-label="Cell 9"></button>
+            </div>
+
+            <div class="game-actions">
+              <button id="tttPlayAgain" class="primary-btn" type="button">Play again</button>
+              <a class="secondary-btn" href="index.html">Back home</a>
+              <button class="secondary-btn" id="browseCategoriesBtn" type="button">Browse categories</button>
+            </div>
           </div>
+
+          <aside class="mini-panel">
+            <p class="eyebrow">wallet</p>
+            <div id="accountSummary" class="mini-summary">Not signed in</div>
+            <p class="mini-copy">Win a round for +50 RAJE's. Losses take 25 RAJE's from your active balance.</p>
+          </aside>
         </section>
       </main>
     </div>
@@ -55,22 +93,27 @@
       <div class="modal-card">
         <button id="closeModal" class="close-btn" type="button" aria-label="Close sign in">×</button>
         <p class="eyebrow">account</p>
-        <h2>Sign in</h2>
+        <h2 id="authTitle">Sign in</h2>
         <form id="authForm">
           <label>
-            <span>Username</span>
-            <input id="usernameInput" type="text" maxlength="24" placeholder="Enter a username" required />
+            <span id="usernameLabel">Username</span>
+            <input id="usernameInput" type="text" maxlength="24" placeholder="Enter username" required />
           </label>
           <label>
-            <span>Password</span>
-            <input id="passwordInput" type="password" maxlength="24" placeholder="Enter a password" required />
+            <span id="passwordLabel">Password</span>
+            <input id="passwordInput" type="password" maxlength="24" placeholder="Enter password" required />
           </label>
-          <button class="primary-btn full-width" type="submit">Continue</button>
+          <label id="confirmPasswordField" class="hidden" hidden style="display: none;">
+            <span>Confirm password</span>
+            <input id="confirmPasswordInput" type="password" maxlength="24" placeholder="Confirm password" />
+          </label>
+          <button id="authSubmitButton" class="primary-btn full-width" type="submit">Sign in</button>
         </form>
         <p id="authMessage" class="auth-message" aria-live="polite"></p>
+        <button id="authSwitchButton" class="secondary-btn full-width auth-switch" type="button">Make account</button>
       </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=6"></script>
   </body>
 </html>

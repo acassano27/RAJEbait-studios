@@ -327,6 +327,125 @@ button:hover { transform: translateY(-1px); }
   background: linear-gradient(135deg, rgba(93, 228, 213, 0.15), rgba(255,255,255,0.02));
 }
 
+.games-page {
+  padding-top: 24px;
+  padding-bottom: 30px;
+}
+
+.game-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(220px, 0.7fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.game-shell,
+.mini-panel {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--card-border);
+  border-radius: 22px;
+}
+
+.game-shell {
+  padding: 24px;
+}
+
+.game-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.game-header h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  letter-spacing: -0.06em;
+}
+
+.ttt-mode-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.ttt-mode-btn {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--card-border);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--muted);
+}
+
+.ttt-mode-btn.active {
+  background: rgba(93, 228, 213, 0.12);
+  color: var(--text);
+  border-color: rgba(93, 228, 213, 0.35);
+}
+
+.game-status {
+  margin-bottom: 18px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.tic-tac-toe-board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  width: min(420px, 100%);
+  margin: 0 auto 20px;
+}
+
+.ttt-cell {
+  aspect-ratio: 1;
+  border-radius: 16px;
+  border: 1px solid var(--card-border);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text);
+  font-size: clamp(2.3rem, 6vw, 4rem);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.ttt-cell.x {
+  color: var(--teal);
+}
+
+.ttt-cell.o {
+  color: var(--rose);
+}
+
+.ttt-cell:disabled {
+  cursor: default;
+  opacity: 1;
+  transform: none;
+}
+
+.game-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.mini-panel {
+  padding: 20px 18px;
+}
+
+.mini-summary {
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.mini-copy {
+  margin-top: 14px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
 .empty-page {
   display: grid;
   place-items: center;
@@ -384,6 +503,26 @@ button:hover { transform: translateY(-1px); }
 .modal-card h2 {
   margin: 0 0 18px;
   font-size: 1.9rem;
+}
+
+.hidden {
+  display: none !important;
+}
+
+#confirmPasswordField {
+  display: none;
+}
+
+#confirmPasswordField.is-visible {
+  display: grid;
+}
+
+.auth-switch {
+  margin-top: 16px;
+}
+
+.auth-switch:hover {
+  color: var(--text);
 }
 
 #authForm {
