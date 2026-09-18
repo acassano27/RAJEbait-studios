@@ -219,7 +219,125 @@ function handleAction(gameName, category) {
     saveHistory(gameName, category);
   }
 
-  window.location.href = 'games.html';
+  window.location.href = gameName === 'Roulette' ? 'roulette.html' : 'games.html';
+}
+
+function initializeRoulette() {
+  const form = document.getElementById('rouletteForm');
+  if (!form) return;
+
+  const betType = document.getElementById('rouletteBetType');
+  const numberField = document.getElementById('rouletteNumberField');
+  const numberInput = document.getElementById('rouletteNumber');
+  const amountInput = document.getElementById('rouletteBetAmount');
+  const decreaseAmount = document.getElementById('decreaseBetAmount');
+  const increaseAmount = document.getElementById('increaseBetAmount');
+  const result = document.getElementById('rouletteResult');
+  const wheel = document.getElementById('rouletteWheel');
+  const wheelNumber = document.getElementById('rouletteWheelNumber');
+  const labels = wheel.querySelector('.roulette-labels');
+  const selector = document.getElementById('rouletteSelector');
+  const spinButton = form.querySelector('button[type="submit"]');
+  const redNumbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
+  const rouletteOrder = [0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 22, 18, 29, 7, 28, 12, 35, 3, 26];
+  let isSpinning = false;
+
+  decreaseAmount.addEventListener('click', () => {
+    const currentAmount = Number(amountInput.value) || 0;
+    amountInput.value = Math.max(1, currentAmount - 1);
+  });
+
+  increaseAmount.addEventListener('click', () => {
+    const currentAmount = Number(amountInput.value) || 0;
+    const balance = getBalanceForUser(getCurrentUser());
+    amountInput.value = Math.min(balance, currentAmount + 1);
+  });
+
+  const pocketSize = 360 / 37;
+  const pocketGradient = [];
+
+  for (let number = 0; number <= 36; number += 1) {
+    const label = document.createElement('span');
+    const pocketNumber = rouletteOrder[number];
+    const angle = (number * 360) / 37 + pocketSize / 2;
+    const start = number * pocketSize;
+    const end = (number + 1) * pocketSize;
+    const pocketColor = pocketNumber === 0 ? '#39b9a5' : redNumbers.includes(pocketNumber) ? '#d84f6d' : '#18202a';
+    label.textContent = pocketNumber;
+    label.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateY(-174px) rotate(${-angle}deg)`;
+    label.className = pocketNumber === 0 ? 'roulette-number green' : redNumbers.includes(pocketNumber) ? 'roulette-number red' : 'roulette-number black';
+    labels.appendChild(label);
+    pocketGradient.push(`${pocketColor} ${start}deg ${end}deg`);
+  }
+
+  wheel.style.background = `conic-gradient(from 0deg, ${pocketGradient.join(', ')})`;
+
+  betType.addEventListener('change', () => {
+    const choosingNumber = betType.value === 'number';
+    numberField.hidden = !choosingNumber;
+    numberField.classList.toggle('hidden', !choosingNumber);
+    numberInput.required = choosingNumber;
+  });
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    if (isSpinning) return;
+
+    const type = betType.value;
+    const amount = Number(amountInput.value);
+    const chosenNumber = Number(numberInput.value);
+    const balance = getBalanceForUser(getCurrentUser());
+
+    if (!Number.isInteger(amount) || amount <= 0 || amount > balance) {
+      result.textContent = 'Enter a valid bet within your current balance.';
+      return;
+    }
+
+    if (type === 'number' && (!Number.isInteger(chosenNumber) || chosenNumber < 0 || chosenNumber > 36)) {
+      result.textContent = 'Choose a number from 0 to 36.';
+      return;
+    }
+
+    const winningNumber = Math.floor(Math.random() * 37);
+    const winningColor = winningNumber === 0 ? 'green' : redNumbers.includes(winningNumber) ? 'red' : 'black';
+    const won = type === 'number' ? chosenNumber === winningNumber : type === winningColor;
+    const payout = won ? (type === 'number' || type === 'green' ? amount * 35 : amount) : -amount;
+
+    isSpinning = true;
+    spinButton.disabled = true;
+    result.textContent = 'The wheel is spinning...';
+    selector.classList.remove('selected');
+    selector.style.transform = 'translate(-50%, -50%) rotate(0deg) translateY(-190px)';
+
+    const winningIndex = rouletteOrder.indexOf(winningNumber);
+    const winningAngle = (winningIndex * 360) / 37 + pocketSize / 2;
+    const spinAnimation = selector.animate([
+      { transform: 'translate(-50%, -50%) rotate(0deg) translateY(-190px)' },
+      { transform: `translate(-50%, -50%) rotate(${1440 + winningAngle}deg) translateY(-190px)` },
+      { transform: `translate(-50%, -50%) rotate(${winningAngle}deg) translateY(-174px)` },
+    ], {
+      duration: 2600,
+      easing: 'cubic-bezier(0.12, 0.72, 0.18, 1)',
+      fill: 'forwards',
+    });
+
+    const finishSpin = () => {
+      if (!isSpinning) return;
+      selector.classList.add('selected');
+      wheelNumber.textContent = winningNumber;
+      result.textContent = won ? `It landed on ${winningNumber} ${winningColor}. You won ${payout} RAJE's.` : `It landed on ${winningNumber} ${winningColor}. You lost ${amount} RAJE's.`;
+      applyGameResult(payout, 'Roulette', 'Gambling');
+      form.reset();
+      numberField.hidden = true;
+      numberField.classList.add('hidden');
+      numberInput.required = false;
+      spinButton.disabled = false;
+      isSpinning = false;
+    };
+
+    spinAnimation.finished.then(finishSpin).catch(() => {});
+    window.setTimeout(finishSpin, 2600);
+  });
 }
 
 function restoreBalance() {
@@ -358,7 +476,9 @@ function finishTicTacToeRound(resultText, payout) {
   ticTacToeGameOver = true;
   const status = document.getElementById('tttStatus');
   if (status) status.textContent = resultText;
-  if (payout !== 0) applyGameResult(payout, 'Tic Tac Toe', 'Games');
+  if (ticTacToeVsComputer && payout !== 0) {
+    applyGameResult(payout, 'Tic Tac Toe', 'Games');
+  }
 }
 
 function afterHumanMove() {
@@ -366,7 +486,10 @@ function afterHumanMove() {
   const status = document.getElementById('tttStatus');
 
   if (winner === 'X') {
-    finishTicTacToeRound('You win! +50 RAJE\'s', 50);
+    finishTicTacToeRound(
+      ticTacToeVsComputer ? 'You win! +50 RAJE\'s' : 'Player X wins!',
+      50,
+    );
     return;
   }
 
@@ -434,7 +557,10 @@ function handleTicTacToeMove(index) {
   const status = document.getElementById('tttStatus');
 
   if (winner === 'O') {
-    finishTicTacToeRound('Player O wins! -25 RAJE\'s', -25);
+    finishTicTacToeRound(
+      ticTacToeVsComputer ? 'Player O wins! -25 RAJE\'s' : 'Player O wins!',
+      -25,
+    );
     return;
   }
 
@@ -514,6 +640,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initializeGuestBalance();
   renderBalance();
   updateAccountSummary();
+  initializeRoulette();
 
   if (tttCells.length) {
     resetTicTacToeBoard();
