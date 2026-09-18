@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Number Ladder</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">logic game</p>
+          <h1>Number Ladder</h1>
+        </div>
+      </header>
+
+      <section class="status-row">
+        <div class="stat-card solo-stat">
+          <span class="label">Attempts</span>
+          <strong id="attemptCount">0 / 8</strong>
+        </div>
+        <button id="newGameBtn" class="secondary-btn new-round-btn" type="button">New round</button>
+      </section>
+
+      <div class="game-layout">
+        <section class="guess-panel">
+          <div id="guessRow" class="guess-row" aria-label="Current guess"></div>
+          <p id="message" class="message" aria-live="polite">
+            Try to match the hidden code by adjusting one digit at a time.
+          </p>
+        </section>
+
+        <div class="controls-group">
+          <div class="pad-wrap">
+            <div class="dpad" aria-label="Directional controls">
+              <button class="dpad-btn up" id="upBtn" type="button" aria-label="Move up">▲</button>
+              <button class="dpad-btn left" id="leftBtn" type="button" aria-label="Move left">◀</button>
+              <button class="dpad-btn center" id="centerBtn" type="button" aria-label="Select current slot">●</button>
+              <button class="dpad-btn right" id="rightBtn" type="button" aria-label="Move right">▶</button>
+              <button class="dpad-btn down" id="downBtn" type="button" aria-label="Move down">▼</button>
+            </div>
+          </div>
+
+          <button id="checkBtn" class="primary-btn" type="button">Check guess</button>
+        </div>
+      </div>
+
+      <div class="bottom-grid">
+        <section class="info-panel">
+          <h2>How to play</h2>
+          <p>
+            You are trying to crack a hidden 3-digit code. Use your arrow keys or the on-screen control pad to select and adjust digits. Each digit must be unique--no repeats allowed!
+          </p>
+          <ul class="play-guide">
+            <li>
+              <span class="key-badge" aria-label="Left and right arrows">◀ ▶</span>
+              <span>move between digits</span>
+            </li>
+            <li>
+              <span class="key-badge" aria-label="Up and down arrows">▲ ▼</span>
+              <span>increase or decrease digit</span>
+            </li>
+            <li>
+              <span class="color-chip exact-chip" aria-label="Exact"></span>
+              <span>valid digit + correct position</span>
+            </li>
+            <li>
+              <span class="color-chip partial-chip" aria-label="In sequence"></span>
+              <span>valid digit + incorrect position</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="demo-panel">
+          <h2>Example</h2>
+
+          <div class="example-line">
+            <div class="mini-digit-row" aria-label="Hidden code example">
+              <span class="mini-digit">4</span>
+              <span class="mini-digit">8</span>
+              <span class="mini-digit">2</span>
+            </div>
+            <span class="example-label">Hidden code</span>
+          </div>
+
+          <div class="example-line">
+            <div class="mini-digit-row" aria-label="Your guess example">
+              <span class="mini-digit">8</span>
+              <span class="mini-digit">4</span>
+              <span class="mini-digit">2</span>
+            </div>
+            <span class="example-label">Your guess</span>
+          </div>
+
+          <div class="example-line">
+            <div class="mini-digit-row" aria-label="Result example">
+              <span class="mini-digit exact">2</span>
+              <span class="mini-digit partial">8</span>
+              <span class="mini-digit partial">4</span>
+            </div>
+            <span class="example-label">New result</span>
+          </div>
+
+          <p class="mini-note">The 2 is exact. The 8 and 4 are valid digits in the code, but they are not in the correct positions.</p>
+        </section>
+      </div>
+
+      <section class="history-panel">
+        <h2>History</h2>
+        <div id="historyList" class="history-list"></div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
