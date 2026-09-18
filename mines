@@ -1,0 +1,263 @@
+"""Core mechanics and a basic terminal runner for a gambling-style Mines game."""
+""" this is going to need a shared bank across the website I just haven't done it yet"""
+from dataclasses import dataclass
+import random
+from typing import Optional, Set
+
+
+DIFFICULTIES = {
+	"easy": {
+		"mine_count": 3,
+		"diamond_chance": 0.04,
+		"diamond_multiplier": 3.0,
+		"safe_multiplier_bonus": 3.0,
+	},
+	"medium": {
+		"mine_count": 5,
+		"diamond_chance": 0.08,
+		"diamond_multiplier": 5.0,
+		"safe_multiplier_bonus": 4.0,
+	},
+	"hard": {
+		"mine_count": 7,
+		"diamond_chance": 0.15,
+		"diamond_multiplier": 8.0,
+		"safe_multiplier_bonus": 6.0,
+	},
+}
+
+
+@dataclass(frozen=True)
+class RoundState:
+	"""A read-only snapshot that is safe to pass to a user interface."""
+
+	board_size: int
+	mine_count: int
+	revealed: frozenset[int]
+	hit_mine: bool
+	finished: bool
+	diamond_tile: Optional[int]
+	diamond_found: bool
+	multiplier: float
+	payout: float
+
+
+class MinesGame:
+	"""Manage one Mines round at a time.
+
+	Tiles are numbered from 0 through ``board_size ** 2 - 1``. A round
+	always contains mines, so revealing every tile cannot be a guaranteed
+	win. A diamond is rolled once at round start and is only placed on a
+	safe tile. It is intentionally rare and increases the cash-out value
+	when found.
+	"""
+
+	def __init__(
+		self,
+		board_size: int = 5,
+		mine_count: int = 5,
+		diamond_chance: float = 0.08,
+		diamond_multiplier: float = 5.0,
+		safe_multiplier_bonus: float = 4.0,
+		rng: Optional[random.Random] = None,
+	) -> None:
+		if board_size < 2:
+			raise ValueError("board_size must be at least 2")
+		tile_count = board_size * board_size
+		if not 1 <= mine_count < tile_count:
+			raise ValueError("mine_count must leave at least one safe tile")
+		if not 0.0 <= diamond_chance <= 1.0:
+			raise ValueError("diamond_chance must be between 0 and 1")
+		if diamond_multiplier <= 1.0:
+			raise ValueError("diamond_multiplier must be greater than 1")
+		if safe_multiplier_bonus <= 0.0:
+			raise ValueError("safe_multiplier_bonus must be greater than 0")
+
+		self.board_size = board_size
+		self.mine_count = mine_count
+		self.diamond_chance = diamond_chance
+		self.diamond_multiplier = diamond_multiplier
+		self.safe_multiplier_bonus = safe_multiplier_bonus
+		self._rng = rng or random.Random()
+		self._mines: Set[int] = set()
+		self._diamond_tile: Optional[int] = None
+		self._revealed: Set[int] = set()
+		self._multiplier = 1.0
+		self._stake = 0.0
+		self._finished = True
+		self._hit_mine = False
+		self._diamond_found = False
+
+	@classmethod
+	def from_difficulty(
+		cls, difficulty: str, rng: Optional[random.Random] = None
+	) -> "MinesGame":
+		"""Create a game using the Easy, Medium, or Hard preset."""
+		name = difficulty.strip().lower()
+		if name not in DIFFICULTIES:
+			raise ValueError("difficulty must be easy, medium, or hard")
+		return cls(**DIFFICULTIES[name], rng=rng)
+
+	@property
+	def tile_count(self) -> int:
+		return self.board_size * self.board_size
+
+	@property
+	def safe_tile_count(self) -> int:
+		return self.tile_count - self.mine_count
+
+	def start_round(self, stake: float) -> RoundState:
+		"""Start a new round and return its initial state."""
+		if stake <= 0:
+			raise ValueError("stake must be greater than 0")
+
+		self._stake = float(stake)
+		self._mines = set(self._rng.sample(range(self.tile_count), self.mine_count))
+		self._diamond_tile = None
+		self._revealed = set()
+		self._multiplier = 1.0
+		self._finished = False
+		self._hit_mine = False
+		self._diamond_found = False
+
+		if self._rng.random() < self.diamond_chance:
+			safe_tiles = [tile for tile in range(self.tile_count) if tile not in self._mines]
+			self._diamond_tile = self._rng.choice(safe_tiles)
+
+		return self.state
+
+	def reveal(self, tile: int) -> RoundState:
+		"""Reveal a tile, ending the round if it contains a mine."""
+		self._check_active_round()
+		self._check_tile(tile)
+		if tile in self._revealed:
+			raise ValueError("tile has already been revealed")
+
+		self._revealed.add(tile)
+		if tile in self._mines:
+			self._hit_mine = True
+			self._finished = True
+		else:
+			self._multiplier = self._safe_tile_multiplier
+			if tile == self._diamond_tile:
+				self._diamond_found = True
+				self._multiplier *= self.diamond_multiplier
+
+		return self.state
+
+	def cash_out(self) -> RoundState:
+		"""End a live round and preserve the current cash-out value."""
+		self._check_active_round()
+		self._finished = True
+		return self.state
+
+	@property
+	def state(self) -> RoundState:
+		"""Return the current public state without exposing mine locations."""
+		return RoundState(
+			board_size=self.board_size,
+			mine_count=self.mine_count,
+			revealed=frozenset(self._revealed),
+			hit_mine=self._hit_mine,
+			finished=self._finished,
+			diamond_tile=self._diamond_tile if self._finished else None,
+			diamond_found=self._diamond_found,
+			multiplier=self._multiplier if not self._hit_mine else 0.0,
+			payout=round(self._stake * self._multiplier, 2)
+			if not self._hit_mine
+			else 0.0,
+		)
+
+	@property
+	def _safe_tile_multiplier(self) -> float:
+		"""Increase the multiplier as more safe tiles are revealed."""
+		revealed_safe_tiles = len(self._revealed)
+		return round(
+			1.0 + (revealed_safe_tiles / self.safe_tile_count) * self.safe_multiplier_bonus,
+			4,
+		)
+
+	def _check_active_round(self) -> None:
+		if self._finished:
+			raise RuntimeError("start a round before making a move")
+
+	def _check_tile(self, tile: int) -> None:
+		if not isinstance(tile, int) or isinstance(tile, bool):
+			raise TypeError("tile must be an integer")
+		if not 0 <= tile < self.tile_count:
+			raise ValueError(f"tile must be between 0 and {self.tile_count - 1}")
+
+
+def _print_board(game: MinesGame) -> None:
+	"""Print the board for the terminal without revealing active mines."""
+	state = game.state
+	for row in range(game.board_size):
+		cells = []
+		for column in range(game.board_size):
+			tile = row * game.board_size + column
+			if tile in state.revealed:
+				if game._hit_mine and tile in game._mines:
+					cell = " X "
+				elif game._finished and tile == game._diamond_tile:
+					cell = " D "
+				else:
+					cell = " . "
+			else:
+				cell = f"{tile:2d} "
+			cells.append(cell)
+		print("|".join(cells))
+
+
+def run_terminal_game() -> None:
+	"""Run a simple interactive game for testing the mechanics."""
+	while True:
+		difficulty = input("Difficulty (easy, medium, hard): ").strip().lower()
+		try:
+			game = MinesGame.from_difficulty(difficulty)
+			difficulty = difficulty.title()
+			break
+		except ValueError as error:
+			print(f"Invalid difficulty: {error}")
+
+	print("Mines: choose safe tiles, then cash out before hitting a mine.")
+	print(
+		f"{difficulty} mode: {game.tile_count} tiles, {game.mine_count} mines, "
+		f"diamond chance {game.diamond_chance:.0%}."
+	)
+
+	while True:
+		stake_input = input("\nStake (or q to quit): ").strip().lower()
+		if stake_input in {"q", "quit"}:
+			print("Goodbye!")
+			return
+		try:
+			stake = float(stake_input)
+			game.start_round(stake)
+		except ValueError as error:
+			print(f"Invalid stake: {error}")
+			continue
+
+		while not game.state.finished:
+			_print_board(game)
+			print(f"Multiplier: {game.state.multiplier:.2f}x")
+			choice = input("Choose a tile number, or type 'cash out': ").strip().lower()
+			if choice in {"cash out", "cashout", "c"}:
+				game.cash_out()
+				break
+			try:
+				game.reveal(int(choice))
+			except (TypeError, ValueError, RuntimeError) as error:
+				print(f"Invalid move: {error}")
+
+		_print_board(game)
+		if game.state.hit_mine:
+			print("Mine hit! You lost your stake.")
+		else:
+			print(f"Cashed out: ${game.state.payout:.2f}")
+		if game.state.diamond_found:
+			print("Diamond found! Big multiplier applied.")
+
+
+if __name__ == "__main__":
+	run_terminal_game()
+
