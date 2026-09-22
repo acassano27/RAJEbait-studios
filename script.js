@@ -212,14 +212,22 @@ function setAuthMode(mode) {
   }
 }
 
-function handleAction(gameName, category) {
+function resolveGameDestination(gameName, explicitTarget) {
+  if (explicitTarget) return explicitTarget;
+
+  const normalizedName = String(gameName || '').trim().toLowerCase();
+  if (normalizedName.includes('roulette')) return 'roulette.html';
+  return 'games.html';
+}
+
+function handleAction(gameName, category, explicitTarget) {
   const currentUser = getCurrentUser();
 
   if (currentUser && gameName) {
     saveHistory(gameName, category);
   }
 
-  window.location.href = gameName === 'Roulette' ? 'roulette.html' : 'games.html';
+  window.location.href = resolveGameDestination(gameName, explicitTarget);
 }
 
 function initializeRoulette() {
@@ -680,12 +688,12 @@ document.addEventListener('DOMContentLoaded', () => {
   closeModal?.addEventListener('click', closeAuthModal);
   restoreBalanceButton?.addEventListener('click', restoreBalance);
   browseCategoriesBtn?.addEventListener('click', () => window.location.href = 'index.html#categories');
-  playNowButton?.addEventListener('click', () => handleAction(null, 'Play now'));
+  playNowButton?.addEventListener('click', () => handleAction(null, 'Play now', 'games.html'));
 
   categoryCards.forEach((card) => {
     card.addEventListener('click', () => {
       const category = card.dataset.category;
-      handleAction(`${category} collection`, category);
+      handleAction(`${category} collection`, category, 'games.html');
     });
   });
 
@@ -693,7 +701,8 @@ document.addEventListener('DOMContentLoaded', () => {
     card.addEventListener('click', () => {
       const gameName = card.dataset.game;
       const category = card.dataset.category;
-      handleAction(gameName, category);
+      const target = card.dataset.target || 'games.html';
+      handleAction(gameName, category, target);
     });
   });
 
