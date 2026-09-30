@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#eef0e6" />
+    <title>Dragonquest</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="page-heading">
+        <div class="title-lockup">
+          <div class="crest" aria-hidden="true">DQ</div>
+          <div>
+            <p class="eyebrow">A solo arcade adventure</p>
+            <h1>Dragonquest</h1>
+          </div>
+        </div>
+        <button id="restartButton" class="restart-button" type="button">
+          <span aria-hidden="true">↻</span> Restart run
+        </button>
+      </header>
+
+      <div class="game-layout">
+        <section class="play-area" aria-label="Dragonquest game">
+          <div class="scene-labels">
+            <span id="roomLabel">Waystone Hall</span>
+            <span class="scene-coordinates">FIELD NOTES <span id="positionLabel">12 : 10</span></span>
+          </div>
+          <div class="canvas-frame">
+            <canvas id="gameCanvas" width="960" height="720" tabindex="0" aria-label="Game map. Use arrow keys or WASD to move."></canvas>
+            <div id="winOverlay" class="win-overlay" hidden>
+              <p class="eyebrow">The relic is restored</p>
+              <h2>Quest complete</h2>
+              <p>All three chalice shards are yours.</p>
+              <button id="playAgainButton" class="restart-button light-button" type="button">Play again</button>
+            </div>
+          </div>
+          <p id="statusMessage" class="status-message" aria-live="polite">The old doors are open. Find the three chalice shards.</p>
+        </section>
+
+        <aside class="expedition-panel" aria-label="Expedition status and controls">
+          <section class="progress-section">
+            <p class="eyebrow">Expedition log</p>
+            <h2 id="roomName">Waystone Hall</h2>
+            <div class="stat-line">
+              <span>Chalice shards</span>
+              <strong><span id="shardCount">0</span><span class="stat-total"> / 3</span></strong>
+            </div>
+            <div class="shard-track" aria-label="Chalice shards collected">
+              <span class="shard-mark" data-shard="0"></span>
+              <span class="shard-mark" data-shard="1"></span>
+              <span class="shard-mark" data-shard="2"></span>
+            </div>
+            <div class="stat-line sword-line">
+              <span>Dragon sword</span>
+              <strong id="swordStatus" class="sword-status">Not found</strong>
+            </div>
+          </section>
+
+          <section class="controls-section">
+            <p class="eyebrow">Move</p>
+            <p class="control-hint">Arrow keys or WASD</p>
+            <div class="direction-pad" aria-label="Movement controls">
+              <button class="direction-button north" data-move="up" type="button" aria-label="Move up">↑</button>
+              <button class="direction-button west" data-move="left" type="button" aria-label="Move left">←</button>
+              <button class="direction-button east" data-move="right" type="button" aria-label="Move right">→</button>
+              <button class="direction-button south" data-move="down" type="button" aria-label="Move down">↓</button>
+            </div>
+          </section>
+
+          <section class="field-guide">
+            <p class="eyebrow">Field guide</p>
+            <p>Gather each shard. Find the sword in Crystal Cavern. Dragons reset your expedition unless you carry it.</p>
+          </section>
+        </aside>
+      </div>
+      <footer class="page-footer"><span>THREE DUNGEONS</span><span>ONE CHALICE</span><span>WATCH THE DRAGONS</span></footer>
+    </main>
+    <script src="game.js"></script>
+  </body>
+</html>
