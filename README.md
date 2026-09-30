@@ -14,6 +14,10 @@ Then visit:
 
 - http://localhost:8000/
 - http://localhost:8000/games.html
+- http://localhost:8000/codebreaker/
+
+To play Codebreaker directly, open the game URL above after starting the local server.
+Game-specific instructions are in [codebreaker/README.md](codebreaker/README.md).
 
 ## Included
 

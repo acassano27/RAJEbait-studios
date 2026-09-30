@@ -199,6 +199,8 @@ function submitGuess() {
 
   renderGuess();
   renderHistory();
+  attemptsUsed += 1;
+  updateAttempts();
 
   if (currentGuess.join('') === targetCode.join('')) {
     gameOver = true;
@@ -206,9 +208,6 @@ function submitGuess() {
     setMessage(`Solved! The hidden code was ${targetCode.join('')}.`);
     return;
   }
-
-  attemptsUsed += 1;
-  updateAttempts();
 
   if (attemptsUsed >= MAX_ATTEMPTS) {
     gameOver = true;

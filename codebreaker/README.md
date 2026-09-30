@@ -1,4 +1,4 @@
-# Number Ladder
+# Codebreaker
 
 A small standalone logic game inspired by Numberle and Wordle.
 
@@ -21,7 +21,7 @@ python -m http.server 8000
 
 Then open:
 
-- http://localhost:8000/numberLadder/
+- http://localhost:8000/codebreaker/
 
 ## Good next upgrades
 

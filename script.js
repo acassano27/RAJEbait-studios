@@ -370,7 +370,7 @@ const TTT_WINNING_LINES = [
   [0, 4, 8],
   [2, 4, 6],
 ];
-const COMPUTER_MISTAKE_CHANCE = 0.05;
+const COMPUTER_MISTAKE_CHANCE = 0.15;
 
 let ticTacToeBoard = Array(9).fill('');
 let ticTacToeCurrentPlayer = 'X';

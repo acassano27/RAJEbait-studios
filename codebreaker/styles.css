@@ -152,8 +152,11 @@ h1 {
 }
 
 .digit-cell.selected {
-  border-color: rgba(148, 163, 184, 0.6);
-  box-shadow: inset 0 0 0 1px rgba(148, 163, 184, 0.3);
+  border-color: rgba(226, 232, 240, 0.95);
+  background: rgba(226, 232, 240, 0.22);
+  outline: 3px solid rgba(226, 232, 240, 0.7);
+  outline-offset: 2px;
+  box-shadow: inset 0 0 0 1px rgba(248, 250, 252, 0.35), 0 0 16px rgba(226, 232, 240, 0.22);
   font-weight: 800;
   font-size: clamp(2.8rem, 4.5vw, 3.8rem);
   transform: translateY(-1px);
@@ -179,6 +182,8 @@ h1 {
   font-size: clamp(2.4rem, 4vw, 3.4rem);
   font-weight: 700;
   transform: none;
+  outline: none;
+  outline-offset: 0;
 }
 
 .digit-cell.partial {
