@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RAJEbait Studios | Mines</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v=10" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar container">
+        <a class="brand-link" href="index.html" aria-label="RAJEbait Studios home page">
+          <div class="brand-wrap">
+            <div class="brand-mark">R</div>
+            <div class="brand-copy">
+              <span class="brand-name">RAJEbait</span>
+              <span class="brand-sub">STUDIOS</span>
+            </div>
+          </div>
+        </a>
+        <nav class="main-nav" aria-label="Main navigation">
+          <a href="index.html#featured">Featured</a>
+          <a href="index.html#categories">Categories</a>
+          <a href="games.html">Games</a>
+        </nav>
+        <div class="header-actions">
+          <div class="balance-pill" aria-live="polite"><span>1000</span><small>RAJE's</small></div>
+          <button id="restoreBalanceButton" class="ghost-btn" type="button" disabled>Restore +100</button>
+          <button id="signInButton" class="ghost-btn" type="button">Sign in</button>
+        </div>
+      </header>
+
+      <main class="container games-page">
+        <section class="game-layout mines-layout">
+          <div class="game-shell mines-shell">
+            <div class="game-header">
+              <div>
+                <p class="eyebrow">gambling room</p>
+                <h1>Mines</h1>
+              </div>
+              <a class="secondary-btn" href="index.html">Back home</a>
+            </div>
+
+            <div class="mines-controls">
+              <label>
+                <span>Difficulty</span>
+                <select id="minesDifficulty">
+                  <option value="easy">Easy · 3 mines</option>
+                  <option value="medium" selected>Medium · 5 mines</option>
+                  <option value="hard">Hard · 7 mines</option>
+                </select>
+              </label>
+              <label>
+                <span>Stake</span>
+                <span class="amount-control mines-stake-control">
+                  <input id="minesStake" type="number" min="1" step="1" value="25" inputmode="numeric" />
+                  <span class="amount-stepper" aria-label="Adjust stake">
+                    <button id="minesDecreaseStake" class="amount-step" type="button" aria-label="Decrease stake">−</button>
+                    <button id="minesIncreaseStake" class="amount-step" type="button" aria-label="Increase stake">+</button>
+                  </span>
+                </span>
+              </label>
+              <button id="minesStart" class="primary-btn" type="button">Start round</button>
+              <button id="minesCashOut" class="secondary-btn" type="button" disabled>Cash out</button>
+            </div>
+
+            <div class="mines-roundbar" aria-live="polite">
+              <p id="minesMessage">Set your stake and start a round.</p>
+              <div class="mines-stats">
+                <span><small>Multiplier</small><strong id="minesMultiplier">1.00×</strong></span>
+                <span><small>Cash out</small><strong id="minesPayout">0 RAJE's</strong></span>
+                <span><small>Safe picks</small><strong id="minesSafeCount">0</strong></span>
+              </div>
+            </div>
+
+            <div id="minesBoard" class="mines-board" role="group" aria-label="Mines game board"></div>
+          </div>
+
+          <aside class="mini-panel">
+            <p class="eyebrow">wallet</p>
+            <div id="accountSummary" class="mini-summary">Not signed in</div>
+            <div class="mines-rules">
+              <h2>How to play</h2>
+              <p>Pick a stake, reveal tiles, and cash out before uncovering a mine. Each safe pick increases your multiplier.</p>
+              <p>A hidden diamond may appear on a safe tile and boost that pick's multiplier.</p>
+              <div class="mines-preset"><span>Easy</span><strong>3 mines · 3× safe bonus</strong></div>
+              <div class="mines-preset"><span>Medium</span><strong>5 mines · 4× safe bonus</strong></div>
+              <div class="mines-preset"><span>Hard</span><strong>7 mines · 6× safe bonus</strong></div>
+            </div>
+          </aside>
+        </section>
+      </main>
+    </div>
+
+    <div id="authModal" class="modal hidden" aria-hidden="true">
+      <div class="modal-card">
+        <button id="closeModal" class="close-btn" type="button" aria-label="Close sign in">×</button>
+        <p class="eyebrow">account</p>
+        <h2 id="authTitle">Sign in</h2>
+        <form id="authForm">
+          <label><span id="usernameLabel">Username</span><input id="usernameInput" type="text" maxlength="24" placeholder="Enter username" required /></label>
+          <label><span id="passwordLabel">Password</span><input id="passwordInput" type="password" maxlength="24" placeholder="Enter password" required /></label>
+          <label id="confirmPasswordField" class="hidden" hidden style="display: none;"><span>Confirm password</span><input id="confirmPasswordInput" type="password" maxlength="24" placeholder="Confirm password" /></label>
+          <button id="authSubmitButton" class="primary-btn full-width" type="submit">Sign in</button>
+        </form>
+        <p id="authMessage" class="auth-message" aria-live="polite"></p>
+        <button id="authSwitchButton" class="secondary-btn full-width auth-switch" type="button">Make account</button>
+      </div>
+    </div>
+    <script src="script.js?v=9"></script>
+    <script src="mines.js?v=1"></script>
+  </body>
+</html>

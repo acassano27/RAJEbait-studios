@@ -19,17 +19,29 @@
 body {
   margin: 0;
   min-height: 100vh;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  font-family: Arial, Helvetica, sans-serif;
+  display: block;
+  padding: 0;
+  font-family: "Inter", sans-serif;
   background: radial-gradient(circle at top, #1e293b 0%, var(--bg) 55%);
   color: var(--text);
   font-size: 17px;
 }
 
+.studio-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  width: 100%;
+  margin: 0;
+  padding: 12px max(16px, calc((100% - 1100px) / 2));
+  background: rgba(15, 23, 42, 0.96);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+  backdrop-filter: blur(12px);
+}
+
 .game-shell {
   width: min(94vw, 760px);
+  margin: 24px auto;
   background: rgba(17, 24, 39, 0.95);
   border: 1px solid rgba(148, 163, 184, 0.18);
   border-radius: 18px;
@@ -540,6 +552,10 @@ button:hover {
   .topbar {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .studio-topbar {
+    padding: 12px 16px;
   }
 
   .status-row,

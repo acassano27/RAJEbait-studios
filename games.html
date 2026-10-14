@@ -6,12 +6,12 @@
     <title>RAJEbait Studios | Games</title>
     <meta
       name="description"
-      content="Empty RAJEbait Studios game collection."
+      content="Browse RAJEbait Studios games by category."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=10" />
   </head>
   <body>
     <div class="app-shell">
@@ -43,49 +43,73 @@
         </div>
       </header>
 
-      <main class="container games-page">
-        <section class="game-layout">
-          <div class="game-shell" aria-live="polite">
-            <div class="game-header">
-              <div>
-                <p class="eyebrow">game room</p>
-                <h1>Tic Tac Toe</h1>
-              </div>
-              <button id="tttReset" class="secondary-btn" type="button">New round</button>
-            </div>
-
-            <div class="ttt-mode-row">
-              <button id="tttModeComputer" class="ttt-mode-btn active" type="button">vs Computer</button>
-              <button id="tttModeTwoPlayer" class="ttt-mode-btn" type="button">2 Players</button>
-            </div>
-
-            <div id="tttStatus" class="game-status">Player X starts</div>
-
-            <div id="ticTacToeBoard" class="tic-tac-toe-board" role="grid" aria-label="Tic Tac Toe board">
-              <button class="ttt-cell" type="button" data-index="0" aria-label="Cell 1"></button>
-              <button class="ttt-cell" type="button" data-index="1" aria-label="Cell 2"></button>
-              <button class="ttt-cell" type="button" data-index="2" aria-label="Cell 3"></button>
-              <button class="ttt-cell" type="button" data-index="3" aria-label="Cell 4"></button>
-              <button class="ttt-cell" type="button" data-index="4" aria-label="Cell 5"></button>
-              <button class="ttt-cell" type="button" data-index="5" aria-label="Cell 6"></button>
-              <button class="ttt-cell" type="button" data-index="6" aria-label="Cell 7"></button>
-              <button class="ttt-cell" type="button" data-index="7" aria-label="Cell 8"></button>
-              <button class="ttt-cell" type="button" data-index="8" aria-label="Cell 9"></button>
-            </div>
-
-            <div class="game-actions">
-              <button id="tttPlayAgain" class="primary-btn" type="button">Play again</button>
-              <a class="secondary-btn" href="index.html">Back home</a>
-              <button class="secondary-btn" id="browseCategoriesBtn" type="button">Browse categories</button>
-            </div>
+      <main class="container games-page catalog-page">
+        <div class="catalog-heading">
+          <div>
+            <p class="eyebrow">game library</p>
+            <h1>Find a game</h1>
           </div>
+          <p class="catalog-count">4 games <span>·</span> 3 categories</p>
+        </div>
 
-          <aside class="mini-panel">
-            <p class="eyebrow">wallet</p>
-            <div id="accountSummary" class="mini-summary">Not signed in</div>
-            <p class="mini-copy">Win a round for +50 RAJE's. Losses take 25 RAJE's from your active balance.</p>
-          </aside>
-        </section>
+        <nav class="category-jump" aria-label="Browse game categories">
+          <a href="#category-gambling">Gambling <span>2</span></a>
+          <a href="#category-games">Games <span>1</span></a>
+          <a href="#category-puzzles">Puzzles &amp; Logic <span>1</span></a>
+        </nav>
+
+        <div class="catalog-list">
+          <section class="catalog-section" id="category-gambling">
+            <div class="catalog-section-heading">
+              <h2>Gambling</h2>
+              <span>2 games</span>
+            </div>
+            <div class="catalog-grid">
+              <button class="catalog-game danger" type="button" data-game="Mines" data-category="Gambling" data-target="mines.html">
+                <span class="tag">Strategy</span>
+                <h3>Mines</h3>
+                <small>Reveal safe tiles and cash out before a mine.</small>
+                <span class="catalog-launch">Play game <span aria-hidden="true">→</span></span>
+              </button>
+              <button class="catalog-game danger" type="button" data-game="Roulette" data-category="Gambling" data-target="roulette.html">
+                <span class="tag">Chance</span>
+                <h3>Roulette</h3>
+                <small>Place a bet on a color or number.</small>
+                <span class="catalog-launch">Play game <span aria-hidden="true">→</span></span>
+              </button>
+            </div>
+          </section>
+
+          <section class="catalog-section" id="category-games">
+            <div class="catalog-section-heading">
+              <h2>Games</h2>
+              <span>1 game</span>
+            </div>
+            <div class="catalog-grid">
+              <button class="catalog-game" type="button" data-game="Tic Tac Toe" data-category="Games" data-target="tic-tac-toe.html">
+                <span class="tag">Classic</span>
+                <h3>Tic Tac Toe</h3>
+                <small>Play a quick three-in-a-row match.</small>
+                <span class="catalog-launch">Play game <span aria-hidden="true">→</span></span>
+              </button>
+            </div>
+          </section>
+
+          <section class="catalog-section" id="category-puzzles">
+            <div class="catalog-section-heading">
+              <h2>Puzzles &amp; Logic</h2>
+              <span>1 game</span>
+            </div>
+            <div class="catalog-grid">
+              <button class="catalog-game success" type="button" data-game="Number Ladder" data-category="Puzzles &amp; Logic" data-target="numberLadder/index.html">
+                <span class="tag">Logic</span>
+                <h3>Number Ladder</h3>
+                <small>Crack the hidden three-digit code.</small>
+                <span class="catalog-launch">Play game <span aria-hidden="true">→</span></span>
+              </button>
+            </div>
+          </section>
+        </div>
       </main>
     </div>
 
@@ -114,6 +138,6 @@
       </div>
     </div>
 
-    <script src="script.js?v=6"></script>
+    <script src="script.js?v=11"></script>
   </body>
 </html>
