@@ -3,6 +3,8 @@ const CELL_SIZE = 48;
 const ROOM_WIDTH = 20;
 const ROOM_HEIGHT = 15;
 const DRAGON_INTERVAL = 650;
+const PLAYER_REPEAT_INTERVAL = 96;
+const TUNNEL_FLASH_DURATION = 480;
 const DIRECTIONS = {
   up: [-1, 0],
   down: [1, 0],
@@ -10,114 +12,20 @@ const DIRECTIONS = {
   right: [0, 1],
 };
 
-const ROOMS = {
-  HUB: {
-    name: "Waystone Hall",
-    shortName: "HUB",
-    palette: { wall: "#33463d", floor: "#99ab9a", door: "#e2b64f", line: "#758a7a" },
-    grid: [
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    ],
-    spawn: [12, 10],
-    dragons: [],
-    items: [],
-  },
-  DUNGEON1: {
-    name: "Goblin Grotto",
-    shortName: "DUNGEON 1",
-    palette: { wall: "#28513d", floor: "#78a47b", door: "#d6df8b", line: "#50775a" },
-    grid: [
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    ],
-    spawn: [13, 1],
-    dragons: [{ id: "d1", row: 5, col: 5 }],
-    items: [{ id: "chalice_1", kind: "shard", row: 10, col: 10 }],
-  },
-  DUNGEON2: {
-    name: "Crystal Cavern",
-    shortName: "DUNGEON 2",
-    palette: { wall: "#27545a", floor: "#75b5a8", door: "#f0ce70", line: "#4a8885" },
-    grid: [
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    ],
-    spawn: [13, 1],
-    dragons: [{ id: "d2", row: 6, col: 7 }],
-    items: [
-      { id: "sword", kind: "sword", row: 5, col: 15 },
-      { id: "chalice_2", kind: "shard", row: 2, col: 2 },
-    ],
-  },
-  DUNGEON3: {
-    name: "Dragon's Den",
-    shortName: "DUNGEON 3",
-    palette: { wall: "#653e4a", floor: "#c07f76", door: "#f1bc71", line: "#986369" },
-    grid: [
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1],
-      [1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1],
-      [1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-    ],
-    spawn: [13, 1],
-    dragons: [
-      { id: "d3a", row: 4, col: 10 },
-      { id: "d3b", row: 9, col: 5 },
-    ],
-    items: [{ id: "chalice_3", kind: "shard", row: 6, col: 16 }],
-  },
-};
+const ROOMS = window.RoomAddons.getAll();
+const TOTAL_SHARDS = 4;
+
+
+
+for (const [roomId, room] of Object.entries(ROOMS)) {
+  for (const exit of room.exits) {
+    if (!ROOMS[exit.to]) throw new Error(`${roomId} points to unknown room ${exit.to}`);
+    if (!["left", "right"].includes(exit.side)) throw new Error(`${roomId} has invalid side ${exit.side}`);
+    if (!Array.isArray(exit.spawn) || exit.spawn.length !== 2) {
+      throw new Error(`${roomId} exit to ${exit.to} has an invalid spawn`);
+    }
+  }
+}
 
 const canvas = document.querySelector("#gameCanvas");
 const context = canvas.getContext("2d");
@@ -125,7 +33,9 @@ const roomLabel = document.querySelector("#roomLabel");
 const roomName = document.querySelector("#roomName");
 const positionLabel = document.querySelector("#positionLabel");
 const shardCount = document.querySelector("#shardCount");
+const shardTotal = document.querySelector("#shardTotal");
 const swordStatus = document.querySelector("#swordStatus");
+const tunnelStatus = document.querySelector("#tunnelStatus");
 const statusMessage = document.querySelector("#statusMessage");
 const winOverlay = document.querySelector("#winOverlay");
 const shardMarks = [...document.querySelectorAll(".shard-mark")];
@@ -133,12 +43,15 @@ const shardMarks = [...document.querySelectorAll(".shard-mark")];
 let game = createGame();
 let previousFrame = 0;
 let dragonClock = 0;
+let lastPlayerMoveAt = 0;
+let tunnelFlash = null;
 
 function createGame() {
   return {
     roomId: "HUB",
     player: { row: ROOMS.HUB.spawn[0], col: ROOMS.HUB.spawn[1] },
     hasSword: false,
+    hasTunnel: false,
     shards: 0,
     dragons: Object.fromEntries(
       Object.entries(ROOMS).map(([roomId, room]) => [
@@ -160,6 +73,35 @@ function currentRoom() {
   return ROOMS[game.roomId];
 }
 
+function findExit(room, side, row) {
+  return room.exits.find((exit) => exit.side === side && exit.row === row);
+}
+
+function enterRoom(roomId, message, spawn) {
+  const destination = ROOMS[roomId];
+  if (!destination) throw new Error(`Unknown room connection: ${roomId}`);
+  game.roomId = roomId;
+  game.player = { row: spawn[0], col: spawn[1] };
+  dragonClock = 0;
+  setMessage(message);
+  syncStatus();
+}
+
+function transitionThroughExit(side) {
+  const room = currentRoom();
+  const exit = findExit(room, side, game.player.row);
+  if (!exit) return false;
+
+  const destination = ROOMS[exit.to];
+  if (!destination) throw new Error(`Unknown room connection: ${exit.to}`);
+  enterRoom(
+    exit.to,
+    `${destination.name} lies beyond the door.`,
+    exit.spawn,
+  );
+  return true;
+}
+
 function isWalkable(room, row, col) {
   return row >= 0 && row < ROOM_HEIGHT && col >= 0 && col < ROOM_WIDTH && room.grid[row][col] !== TILE.WALL;
 }
@@ -174,19 +116,13 @@ function syncStatus() {
   roomName.textContent = room.name;
   positionLabel.textContent = `${String(game.player.row).padStart(2, "0")} : ${String(game.player.col).padStart(2, "0")}`;
   shardCount.textContent = String(game.shards);
+  shardTotal.textContent = String(TOTAL_SHARDS);
   swordStatus.textContent = game.hasSword ? "Recovered" : "Not found";
   swordStatus.classList.toggle("found", game.hasSword);
+  tunnelStatus.textContent = game.hasTunnel ? "Recovered" : "Not found";
+  tunnelStatus.classList.toggle("found", game.hasTunnel);
   shardMarks.forEach((mark, index) => mark.classList.toggle("collected", index < game.shards));
   winOverlay.hidden = !game.won;
-}
-
-function enterRoom(roomId, message) {
-  game.roomId = roomId;
-  const spawn = currentRoom().spawn;
-  game.player = { row: spawn[0], col: spawn[1] };
-  dragonClock = 0;
-  setMessage(message);
-  syncStatus();
 }
 
 function movePlayer(direction) {
@@ -196,24 +132,32 @@ function movePlayer(direction) {
   let nextCol = game.player.col + colDelta;
 
   if (nextCol < 0) {
-    if (game.roomId !== "HUB") {
-      enterRoom("HUB", "You return to Waystone Hall. The dungeons remain ahead.");
-    }
+    transitionThroughExit("left");
     return;
   }
 
   if (nextCol >= ROOM_WIDTH) {
-    if (game.roomId === "HUB") {
-      const destination = { 3: "DUNGEON1", 7: "DUNGEON2", 11: "DUNGEON3" }[game.player.row];
-      if (destination) enterRoom(destination, `${ROOMS[destination].name} lies beyond the door.`);
-    }
+    transitionThroughExit("right");
     return;
   }
 
   const room = currentRoom();
-  if (!isWalkable(room, nextRow, nextCol)) return;
+  let crossedWall = null;
+  if (!isWalkable(room, nextRow, nextCol)) {
+    if (!game.hasTunnel || !isWalkable(room, nextRow + rowDelta, nextCol + colDelta)) return;
+    crossedWall = { row: nextRow, col: nextCol };
+    nextRow += rowDelta;
+    nextCol += colDelta;
+  }
 
   game.player = { row: nextRow, col: nextCol };
+  if (crossedWall) {
+    tunnelFlash = {
+      roomId: game.roomId,
+      ...crossedWall,
+      startedAt: performance.now(),
+    };
+  }
   collectItems();
   checkDragonCollision();
   checkWin();
@@ -229,9 +173,12 @@ function collectItems() {
     if (item.kind === "sword") {
       game.hasSword = true;
       setMessage("You found the dragon sword. Now you can face them blade to blade.");
+    } else if (item.kind === "tunnel") {
+      game.hasTunnel = true;
+      setMessage("You found the magic tunnel. It lets you pass through a wall when the far side is clear.");
     } else {
       game.shards += 1;
-      setMessage(`Chalice shard recovered. ${game.shards} of 3 found.`);
+      setMessage(`Chalice shard recovered. ${game.shards} of ${TOTAL_SHARDS} found.`);
     }
   }
 }
@@ -255,9 +202,9 @@ function checkDragonCollision() {
 }
 
 function checkWin() {
-  if (game.shards >= 3) {
+  if (game.shards >= TOTAL_SHARDS) {
     game.won = true;
-    setMessage("All three chalice shards are restored.");
+    setMessage("All four chalice shards are restored.");
   }
 }
 
@@ -306,7 +253,7 @@ function moveDragons() {
 function restartGame() {
   game = createGame();
   dragonClock = 0;
-  setMessage("A new expedition begins. Find the three chalice shards.");
+  setMessage("A new expedition begins. Find the four chalice shards.");
   syncStatus();
 }
 
@@ -325,6 +272,18 @@ function drawRoom(timestamp) {
 
       if (tile === TILE.WALL) {
         drawWall(x, y, palette);
+        if (tunnelFlash?.roomId === game.roomId && tunnelFlash.row === row && tunnelFlash.col === col) {
+          const progress = Math.max(0, 1 - (timestamp - tunnelFlash.startedAt) / TUNNEL_FLASH_DURATION);
+          if (progress > 0) {
+            context.fillStyle = `rgba(111, 234, 210, ${0.55 * progress})`;
+            context.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+            context.strokeStyle = `rgba(229, 255, 220, ${0.9 * progress})`;
+            context.lineWidth = 3;
+            context.strokeRect(x + 2, y + 2, CELL_SIZE - 4, CELL_SIZE - 4);
+          } else {
+            tunnelFlash = null;
+          }
+        }
       } else {
         context.strokeStyle = `${palette.line}70`;
         context.lineWidth = 1;
@@ -337,6 +296,7 @@ function drawRoom(timestamp) {
 
   for (const item of game.items[game.roomId]) {
     if (item.kind === "sword") drawSword(item.row, item.col);
+    else if (item.kind === "tunnel") drawTunnel(item.row, item.col, timestamp);
     else drawShard(item.row, item.col, timestamp);
   }
 
@@ -438,6 +398,31 @@ function drawSword(row, col) {
   context.fillRect(-2, 8, 4, 11);
   context.fillStyle = "#523c2c";
   context.fillRect(-3, 17, 6, 5);
+  context.restore();
+}
+
+function drawTunnel(row, col, timestamp) {
+  const { x, y } = cellCenter(row, col);
+  const bob = Math.sin(timestamp / 280 + row) * 2;
+  context.save();
+  context.translate(x, y + bob);
+  context.shadowColor = "rgba(119, 220, 207, 0.8)";
+  context.shadowBlur = 12;
+  context.fillStyle = "#78d4c5";
+  context.strokeStyle = "#286c66";
+  context.lineWidth = 2;
+  context.beginPath();
+  context.roundRect(-15, -7, 30, 14, 3);
+  context.fill();
+  context.stroke();
+  context.shadowBlur = 0;
+  context.strokeStyle = "#e5f2ca";
+  context.beginPath();
+  context.moveTo(-8, -3);
+  context.lineTo(8, -3);
+  context.moveTo(-8, 3);
+  context.lineTo(8, 3);
+  context.stroke();
   context.restore();
 }
 
@@ -560,7 +545,7 @@ function drawCanvasHud(room) {
   context.fillText(game.hasSword ? "SWORD  FOUND" : "SWORD  LOST", canvas.width - 16, 22);
   context.textAlign = "left";
   context.fillStyle = "#f0d17c";
-  context.fillText(`SHARDS  ${game.shards} / 3`, canvas.width - 220, 22);
+  context.fillText(`SHARDS  ${game.shards} / ${TOTAL_SHARDS}`, canvas.width - 220, 22);
 }
 
 function frame(timestamp) {
@@ -597,7 +582,10 @@ document.addEventListener("keydown", (event) => {
   const direction = keyDirections[event.key];
   if (!direction) return;
   event.preventDefault();
-  if (!event.repeat) movePlayer(direction);
+  const now = performance.now();
+  if (event.repeat && now - lastPlayerMoveAt < PLAYER_REPEAT_INTERVAL) return;
+  lastPlayerMoveAt = now;
+  movePlayer(direction);
 });
 
 document.querySelectorAll("[data-move]").forEach((button) => {

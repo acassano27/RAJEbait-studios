@@ -264,6 +264,15 @@ h1 {
   color: #7a5b17 !important;
 }
 
+.tunnel-status {
+  color: var(--coral) !important;
+  font-size: 10px !important;
+}
+
+.tunnel-status.found {
+  color: #286c66 !important;
+}
+
 .control-hint {
   margin: -2px 0 13px;
   color: var(--muted);
@@ -345,7 +354,47 @@ h1 {
   color: #f2f1e6;
   background: rgba(25, 40, 34, 0.91);
   text-align: center;
-  animation: arrive 240ms ease-out both;
+  animation: victory-wash 700ms ease-out both;
+}
+
+.win-overlay::before {
+  position: absolute;
+  inset: 14px;
+  border: 1px solid rgba(239, 203, 105, 0.48);
+  content: "";
+  pointer-events: none;
+}
+
+.victory-shards {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-height: 42px;
+  margin-bottom: 18px;
+}
+
+.victory-shards span {
+  width: 15px;
+  height: 24px;
+  border: 1px solid #fff0b2;
+  background: #edc75f;
+  box-shadow: 0 0 18px rgba(237, 199, 95, 0.72);
+  clip-path: polygon(50% 0, 100% 36%, 78% 100%, 20% 100%, 0 36%);
+  opacity: 0;
+  transform: translateY(15px) rotate(18deg);
+  animation: shard-rise 520ms cubic-bezier(0.18, 0.78, 0.25, 1.25) forwards;
+}
+
+.victory-shards span:nth-child(2) {
+  animation-delay: 120ms;
+}
+
+.victory-shards span:nth-child(3) {
+  animation-delay: 240ms;
+}
+
+.victory-shards span:nth-child(4) {
+  animation-delay: 360ms;
 }
 
 .win-overlay[hidden] {
@@ -354,16 +403,23 @@ h1 {
 
 .win-overlay .eyebrow {
   color: var(--gold);
+  animation: arrive 420ms 250ms ease-out both;
 }
 
 .win-overlay h2 {
   margin: 0 0 12px;
   font-size: 34px;
+  animation: arrive 500ms 340ms cubic-bezier(0.16, 0.8, 0.3, 1) both;
 }
 
 .win-overlay p:not(.eyebrow) {
   color: #d0dbce;
   font-size: 12px;
+  animation: arrive 420ms 470ms ease-out both;
+}
+
+.win-overlay .light-button {
+  animation: arrive 420ms 580ms ease-out both;
 }
 
 .light-button {
@@ -390,6 +446,28 @@ button:focus-visible {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes victory-wash {
+  from {
+    background: rgba(25, 40, 34, 0.35);
+    backdrop-filter: blur(0);
+  }
+  to {
+    background: rgba(25, 40, 34, 0.91);
+    backdrop-filter: blur(2px);
+  }
+}
+
+@keyframes shard-rise {
+  60% {
+    opacity: 1;
+    transform: translateY(-5px) rotate(-8deg) scale(1.15);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0) scale(1);
   }
 }
 
@@ -455,6 +533,36 @@ button:focus-visible {
 
   .canvas-frame {
     border-width: 3px;
+  }
+
+  .win-overlay {
+    padding: 10px;
+  }
+
+  .victory-shards {
+    min-height: 24px;
+    gap: 8px;
+    margin-bottom: 7px;
+  }
+
+  .victory-shards span {
+    width: 11px;
+    height: 17px;
+  }
+
+  .win-overlay h2 {
+    margin-bottom: 6px;
+    font-size: 22px;
+  }
+
+  .win-overlay p:not(.eyebrow) {
+    margin-bottom: 6px;
+    font-size: 10px;
+  }
+
+  .win-overlay .light-button {
+    min-height: 34px;
+    margin-top: 2px;
   }
 
   .expedition-panel {
