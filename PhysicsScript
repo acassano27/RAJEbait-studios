@@ -1,0 +1,7 @@
+"""Compatibility launcher for the separated Plinko game."""
+
+from plinko_game import PlinkoGame
+
+
+if __name__ == "__main__":
+    PlinkoGame().run()
