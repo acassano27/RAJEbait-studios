@@ -2,6 +2,7 @@ const TILE = { FLOOR: 0, WALL: 1, DOOR: 2 };
 const CELL_SIZE = 48;
 const ROOM_WIDTH = 20;
 const ROOM_HEIGHT = 15;
+const CHALICE_TOWER = { roomId: "HUB", row: 4, col: 4 };
 const DRAGON_INTERVAL = 650;
 const PLAYER_REPEAT_INTERVAL = 96;
 const TUNNEL_FLASH_DURATION = 480;
@@ -13,14 +14,28 @@ const DIRECTIONS = {
 };
 
 const ROOMS = window.RoomAddons.getAll();
-const TOTAL_SHARDS = 4;
+const TOTAL_SHARDS = 5;
 
 
 
 for (const [roomId, room] of Object.entries(ROOMS)) {
   for (const exit of room.exits) {
     if (!ROOMS[exit.to]) throw new Error(`${roomId} points to unknown room ${exit.to}`);
-    if (!["left", "right"].includes(exit.side)) throw new Error(`${roomId} has invalid side ${exit.side}`);
+    if (!["left", "right", "top", "bottom"].includes(exit.side)) {
+      throw new Error(`${roomId} has invalid side ${exit.side}`);
+    }
+    const isVerticalExit = exit.side === "top" || exit.side === "bottom";
+    const position = isVerticalExit ? exit.col : exit.row;
+    const positionLimit = isVerticalExit ? ROOM_WIDTH : ROOM_HEIGHT;
+    const minimumPosition = isVerticalExit ? 1 : 0;
+    const maximumPosition = isVerticalExit ? positionLimit - 2 : positionLimit - 1;
+    if (
+      !Number.isInteger(position)
+      || position < minimumPosition
+      || position > maximumPosition
+    ) {
+      throw new Error(`${roomId} has an invalid ${exit.side} exit position`);
+    }
     if (!Array.isArray(exit.spawn) || exit.spawn.length !== 2) {
       throw new Error(`${roomId} exit to ${exit.to} has an invalid spawn`);
     }
@@ -39,6 +54,9 @@ const tunnelStatus = document.querySelector("#tunnelStatus");
 const statusMessage = document.querySelector("#statusMessage");
 const winOverlay = document.querySelector("#winOverlay");
 const shardMarks = [...document.querySelectorAll(".shard-mark")];
+const canvasRoomLabel = document.querySelector("#canvasRoomLabel");
+const canvasSwordStatus = document.querySelector("#canvasSwordStatus");
+const canvasShardStatus = document.querySelector("#canvasShardStatus");
 
 let game = createGame();
 let previousFrame = 0;
@@ -73,8 +91,11 @@ function currentRoom() {
   return ROOMS[game.roomId];
 }
 
-function findExit(room, side, row) {
-  return room.exits.find((exit) => exit.side === side && exit.row === row);
+function findExit(room, side, position) {
+  return room.exits.find(
+    (exit) => exit.side === side
+      && (side === "top" || side === "bottom" ? exit.col : exit.row) === position,
+  );
 }
 
 function enterRoom(roomId, message, spawn) {
@@ -87,9 +108,9 @@ function enterRoom(roomId, message, spawn) {
   syncStatus();
 }
 
-function transitionThroughExit(side) {
+function transitionThroughExit(side, position) {
   const room = currentRoom();
-  const exit = findExit(room, side, game.player.row);
+  const exit = findExit(room, side, position);
   if (!exit) return false;
 
   const destination = ROOMS[exit.to];
@@ -122,6 +143,10 @@ function syncStatus() {
   tunnelStatus.textContent = game.hasTunnel ? "Recovered" : "Not found";
   tunnelStatus.classList.toggle("found", game.hasTunnel);
   shardMarks.forEach((mark, index) => mark.classList.toggle("collected", index < game.shards));
+  canvasRoomLabel.textContent = room.shortName;
+  canvasSwordStatus.textContent = game.hasSword ? "SWORD  FOUND" : "SWORD  LOST";
+  canvasSwordStatus.classList.toggle("found", game.hasSword);
+  canvasShardStatus.textContent = `SHARDS  ${game.shards} / ${TOTAL_SHARDS}`;
   winOverlay.hidden = !game.won;
 }
 
@@ -132,12 +157,22 @@ function movePlayer(direction) {
   let nextCol = game.player.col + colDelta;
 
   if (nextCol < 0) {
-    transitionThroughExit("left");
+    transitionThroughExit("left", game.player.row);
     return;
   }
 
   if (nextCol >= ROOM_WIDTH) {
-    transitionThroughExit("right");
+    transitionThroughExit("right", game.player.row);
+    return;
+  }
+
+  if (nextRow < 0) {
+    transitionThroughExit("top", game.player.col);
+    return;
+  }
+
+  if (nextRow >= ROOM_HEIGHT) {
+    transitionThroughExit("bottom", game.player.col);
     return;
   }
 
@@ -178,7 +213,11 @@ function collectItems() {
       setMessage("You found the magic tunnel. It lets you pass through a wall when the far side is clear.");
     } else {
       game.shards += 1;
-      setMessage(`Chalice shard recovered. ${game.shards} of ${TOTAL_SHARDS} found.`);
+      if (game.shards >= TOTAL_SHARDS) {
+        setMessage("The chalice is restored. Return it to the tallest tower in Waystone Hall.");
+      } else {
+        setMessage(`Chalice shard recovered. ${game.shards} of ${TOTAL_SHARDS} found.`);
+      }
     }
   }
 }
@@ -202,10 +241,13 @@ function checkDragonCollision() {
 }
 
 function checkWin() {
-  if (game.shards >= TOTAL_SHARDS) {
-    game.won = true;
-    setMessage("All four chalice shards are restored.");
-  }
+  const reachedTower = game.roomId === CHALICE_TOWER.roomId
+    && game.player.row === CHALICE_TOWER.row
+    && game.player.col === CHALICE_TOWER.col;
+  if (game.shards < TOTAL_SHARDS || !reachedTower) return;
+
+  game.won = true;
+  setMessage("You returned the restored chalice to the tallest tower.");
 }
 
 function findNextStep(room, start, target) {
@@ -253,13 +295,23 @@ function moveDragons() {
 function restartGame() {
   game = createGame();
   dragonClock = 0;
-  setMessage("A new expedition begins. Find the four chalice shards.");
+  setMessage("Find the five chalice shards, then return the restored chalice to the tallest tower in Waystone Hall.");
   syncStatus();
 }
 
 function drawRoom(timestamp) {
   const room = currentRoom();
-  const palette = room.palette;
+  const restoredHubPalette = game.won && game.roomId === CHALICE_TOWER.roomId
+    ? {
+      ...room.palette,
+      wall: "#e5bd43",
+      wallShadow: "rgba(255, 248, 200, 0.34)",
+      floor: "#31cde0",
+      door: "#fff0a3",
+      line: "#a87816",
+    }
+    : room.palette;
+  const palette = restoredHubPalette;
   context.clearRect(0, 0, canvas.width, canvas.height);
 
   for (let row = 0; row < ROOM_HEIGHT; row += 1) {
@@ -294,6 +346,8 @@ function drawRoom(timestamp) {
     }
   }
 
+  drawTowerTarget(timestamp);
+
   for (const item of game.items[game.roomId]) {
     if (item.kind === "sword") drawSword(item.row, item.col);
     else if (item.kind === "tunnel") drawTunnel(item.row, item.col, timestamp);
@@ -302,11 +356,46 @@ function drawRoom(timestamp) {
 
   game.dragons[game.roomId].forEach((dragon, index) => drawDragon(dragon, timestamp, index));
   drawPlayer(game.player);
-  drawCanvasHud(room);
+}
+
+function drawTowerTarget(timestamp) {
+  if (game.roomId !== CHALICE_TOWER.roomId) return;
+
+  const x = CHALICE_TOWER.col * CELL_SIZE;
+  const y = CHALICE_TOWER.row * CELL_SIZE;
+  const pulse = (Math.sin(timestamp / 360) + 1) / 2;
+
+  context.save();
+  context.fillStyle = `rgba(225, 182, 83, ${0.2 + pulse * 0.16})`;
+  context.fillRect(x + 2, y + 2, CELL_SIZE - 4, CELL_SIZE - 4);
+  context.strokeStyle = "#f0d17c";
+  context.lineWidth = 2;
+  context.strokeRect(x + 3, y + 3, CELL_SIZE - 6, CELL_SIZE - 6);
+
+  for (let index = 0; index < 4; index += 1) {
+    const angle = timestamp / 420 + index * Math.PI / 2;
+    const centerX = x + CELL_SIZE / 2 + Math.cos(angle) * 15;
+    const centerY = y + CELL_SIZE / 2 + Math.sin(angle) * 15;
+    const size = 1.5 + pulse * 1.5;
+    context.globalAlpha = 0.55 + pulse * 0.4;
+    context.fillStyle = "#fff4c2";
+    context.beginPath();
+    context.moveTo(centerX, centerY - size * 2);
+    context.lineTo(centerX + size * 0.55, centerY - size * 0.55);
+    context.lineTo(centerX + size * 2, centerY);
+    context.lineTo(centerX + size * 0.55, centerY + size * 0.55);
+    context.lineTo(centerX, centerY + size * 2);
+    context.lineTo(centerX - size * 0.55, centerY + size * 0.55);
+    context.lineTo(centerX - size * 2, centerY);
+    context.lineTo(centerX - size * 0.55, centerY - size * 0.55);
+    context.closePath();
+    context.fill();
+  }
+  context.restore();
 }
 
 function drawWall(x, y, palette) {
-  context.fillStyle = "rgba(10, 24, 19, 0.18)";
+  context.fillStyle = palette.wallShadow || "rgba(10, 24, 19, 0.18)";
   context.fillRect(x + 3, y + 4, CELL_SIZE - 6, CELL_SIZE - 7);
   context.strokeStyle = `${palette.line}b0`;
   context.lineWidth = 1;
@@ -531,21 +620,6 @@ function drawPlayer(player) {
   context.arc(x + 3, y - 3, 1.2, 0, Math.PI * 2);
   context.fill();
   context.restore();
-}
-
-function drawCanvasHud(room) {
-  context.fillStyle = "rgba(24, 39, 32, 0.84)";
-  context.fillRect(0, 0, canvas.width, 43);
-  context.fillStyle = "#f2eee0";
-  context.font = "500 13px 'DM Mono', monospace";
-  context.textBaseline = "middle";
-  context.fillText(room.shortName, 16, 22);
-  context.textAlign = "right";
-  context.fillStyle = game.hasSword ? "#efcb69" : "#d6dfcf";
-  context.fillText(game.hasSword ? "SWORD  FOUND" : "SWORD  LOST", canvas.width - 16, 22);
-  context.textAlign = "left";
-  context.fillStyle = "#f0d17c";
-  context.fillText(`SHARDS  ${game.shards} / ${TOTAL_SHARDS}`, canvas.width - 220, 22);
 }
 
 function frame(timestamp) {

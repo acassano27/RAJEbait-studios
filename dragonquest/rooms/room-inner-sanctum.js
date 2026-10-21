@@ -25,5 +25,5 @@ window.RoomAddons.register("INNER_SANCTUM", {
       { side: "left", row: 11, to: "MAZE_HALL", spawn: [11, 18] },
     ],
     dragons: [],
-    items: [{ id: "chalice_4", kind: "shard", row: 6, col: 13 }],
-  });
+  items: [{ id: "chalice_4", kind: "shard", row: 6, col: 13 }],
+   });

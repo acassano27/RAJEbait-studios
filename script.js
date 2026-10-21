@@ -107,14 +107,17 @@ function adjustBalanceBy(delta, gameName = '', category = '') {
 function updateAccountSummary() {
   const summary = document.getElementById('accountSummary');
   const restoreButton = document.getElementById('restoreBalanceButton');
-  if (!summary) return;
-
   const user = getCurrentUser();
   const guestBalance = getGuestBalance();
 
   if (restoreButton) {
     restoreButton.disabled = !user;
     restoreButton.title = user ? 'Add 100 RAJE\'s' : 'Sign in to restore currency';
+  }
+
+  if (!summary) {
+    renderBalance();
+    return;
   }
 
   if (!user) {
@@ -637,7 +640,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const authMessage = document.getElementById('authMessage');
   const authSwitchButton = document.getElementById('authSwitchButton');
   const browseCategoriesBtn = document.getElementById('browseCategoriesBtn');
-  const tttResetButton = document.getElementById('tttReset');
   const tttPlayAgainButton = document.getElementById('tttPlayAgain');
   const tttComputerModeButton = document.getElementById('tttModeComputer');
   const tttTwoPlayerModeButton = document.getElementById('tttModeTwoPlayer');
@@ -660,7 +662,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  tttResetButton?.addEventListener('click', resetTicTacToeBoard);
   tttPlayAgainButton?.addEventListener('click', resetTicTacToeBoard);
 
   tttComputerModeButton?.addEventListener('click', () => {
@@ -687,7 +688,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   closeModal?.addEventListener('click', closeAuthModal);
   restoreBalanceButton?.addEventListener('click', restoreBalance);
+<<<<<<< HEAD
   browseCategoriesBtn?.addEventListener('click', () => window.location.href = 'index.html#categories');
+=======
+  browseCategoriesBtn?.addEventListener('click', () => window.location.href = 'games.html');
+>>>>>>> 6b360409049e6186f605b0c093a74855127a7718
   playNowButton?.addEventListener('click', () => handleAction(null, 'Play now', 'games.html'));
 
   categoryCards.forEach((card) => {

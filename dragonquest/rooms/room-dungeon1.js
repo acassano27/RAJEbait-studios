@@ -4,8 +4,8 @@ window.RoomAddons.register("DUNGEON1", {
     shortName: "DUNGEON 1",
     palette: { wall: "#28513d", floor: "#78a47b", door: "#d6df8b", line: "#50775a" },
     grid: [
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-      [2, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+      [1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
       [1, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
       [1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1],
       [1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -22,12 +22,9 @@ window.RoomAddons.register("DUNGEON1", {
     ],
     spawn: [1, 1],
     exits: [
-      { side: "left", row: 1, to: "HUB", spawn: [1, 18] },
+      { side: "top", col: 7, to: "HUB", spawn: [13, 7] },
       { side: "right", row: 7, to: "MAZE_HALL", spawn: [7, 1] },
     ],
     dragons: [{ id: "d1", row: 5, col: 5 }],
-    items: [
-      { id: "magic_tunnel", kind: "tunnel", row: 2, col: 4 },
-      { id: "chalice_1", kind: "shard", row: 10, col: 10 },
-    ],
+    items: [{ id: "chalice_1", kind: "shard", row: 10, col: 10 }],
   });

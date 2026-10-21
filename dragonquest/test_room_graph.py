@@ -24,8 +24,9 @@ for module_path in sorted((ROOT / "rooms").glob("room-*.js")):
     exits_match = re.search(r'exits:\s*\[(.*?)\n\s*\],', source, re.DOTALL)
     assert exits_match, f"Missing exits in {room_id}"
     exit_pattern = re.compile(
-        r'\{\s*side:\s*"(left|right)",\s*row:\s*(\d+),\s*'
-        r'to:\s*"([A-Z0-9_]+)",\s*spawn:\s*\[(\d+),\s*(\d+)\]\s*\}'
+        r'\{\s*side:\s*"(left|right|top|bottom)",\s*'
+        r'(row|col):\s*(\d+),\s*to:\s*"([A-Z0-9_]+)",\s*'
+        r'spawn:\s*\[(\d+),\s*(\d+)\]\s*\}'
     )
     raw_exits = re.findall(r'\{\s*side:', exits_match.group(1))
     parsed_exits = list(exit_pattern.finditer(exits_match.group(1)))
@@ -33,9 +34,10 @@ for module_path in sorted((ROOT / "rooms").glob("room-*.js")):
     exits = [
         {
             "side": match.group(1),
-            "row": int(match.group(2)),
-            "to": match.group(3),
-            "spawn": [int(match.group(4)), int(match.group(5))],
+            "axis": match.group(2),
+            "position": int(match.group(3)),
+            "to": match.group(4),
+            "spawn": [int(match.group(5)), int(match.group(6))],
         }
         for match in parsed_exits
     ]
@@ -47,15 +49,30 @@ for room_id, room in ROOMS.items():
     exits = room["exits"]
     exit_positions = set()
     for exit in exits:
-        position = (exit["side"], exit["row"])
+        position = (exit["side"], exit["position"])
         assert position not in exit_positions, f"{room_id}: duplicate exit at {position}"
         exit_positions.add(position)
-        assert 0 <= exit["row"] < ROOM_HEIGHT, f"{room_id}: exit row out of bounds"
+        is_vertical_exit = exit["side"] in ("top", "bottom")
+        expected_axis = "col" if is_vertical_exit else "row"
+        assert exit["axis"] == expected_axis, (
+            f"{room_id}: {exit['side']} exit position must use {expected_axis}"
+        )
+        position_limit = ROOM_WIDTH if is_vertical_exit else ROOM_HEIGHT
+        minimum_position = 1 if is_vertical_exit else 0
+        maximum_position = position_limit - (2 if is_vertical_exit else 1)
+        assert minimum_position <= exit["position"] <= maximum_position, (
+            f"{room_id}: exit position out of bounds"
+        )
         assert exit["to"] in ROOMS, f"{room_id}: unknown destination {exit['to']}"
 
-        door_col = 0 if exit["side"] == "left" else ROOM_WIDTH - 1
-        assert room["grid"][exit["row"]][door_col] == 2, (
-            f"{room_id}: {exit['side']} exit at row {exit['row']} has no door tile"
+        if exit["side"] in ("top", "bottom"):
+            door_row = 0 if exit["side"] == "top" else ROOM_HEIGHT - 1
+            door_col = exit["position"]
+        else:
+            door_row = exit["position"]
+            door_col = 0 if exit["side"] == "left" else ROOM_WIDTH - 1
+        assert room["grid"][door_row][door_col] == 2, (
+            f"{room_id}: {exit['side']} exit at {exit['position']} has no door tile"
         )
 
         spawn_row, spawn_col = exit["spawn"]
@@ -67,23 +84,36 @@ for room_id, room in ROOMS.items():
             f"{room_id}: spawn for {exit['to']} lands in a wall"
         )
 
-        opposite = "right" if exit["side"] == "left" else "left"
-        expected_return_spawn = [exit["row"], ROOM_WIDTH - 2 if exit["side"] == "right" else 1]
         reciprocal = any(
-            candidate["side"] == opposite
-            and candidate["row"] == spawn_row
-            and candidate["to"] == room_id
-            and candidate["spawn"] == expected_return_spawn
+            candidate["to"] == room_id
             for candidate in destination["exits"]
         )
         assert reciprocal, (
-            f"{room_id} {exit['side']} door at row {exit['row']} has no matching return exit "
+            f"{room_id} {exit['side']} exit at {exit['position']} has no return exit "
             f"in {exit['to']}"
         )
 
-    for side, col in (("left", 0), ("right", ROOM_WIDTH - 1)):
-        grid_doors = {row for row in range(ROOM_HEIGHT) if room["grid"][row][col] == 2}
-        declared_doors = {exit["row"] for exit in exits if exit["side"] == side}
+    for side, door_cells in (
+        ("left", {(row, 0) for row in range(ROOM_HEIGHT)}),
+        ("right", {(row, ROOM_WIDTH - 1) for row in range(ROOM_HEIGHT)}),
+        ("top", {(0, col) for col in range(1, ROOM_WIDTH - 1)}),
+        ("bottom", {(ROOM_HEIGHT - 1, col) for col in range(1, ROOM_WIDTH - 1)}),
+    ):
+        grid_doors = {
+            (row, col)
+            for row, col in door_cells
+            if room["grid"][row][col] == 2
+        }
+        if side in ("top", "bottom"):
+            door_row = 0 if side == "top" else ROOM_HEIGHT - 1
+            declared_doors = {
+                (door_row, exit["position"])
+                for exit in exits
+                if exit["side"] == side
+            }
+        else:
+            door_col = 0 if side == "left" else ROOM_WIDTH - 1
+            declared_doors = {(exit["position"], door_col) for exit in exits if exit["side"] == side}
         assert grid_doors == declared_doors, (
             f"{room_id}: {side} grid doors {grid_doors} != declared exits {declared_doors}"
         )

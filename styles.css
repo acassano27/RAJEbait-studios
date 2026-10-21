@@ -136,6 +136,10 @@ button:hover { transform: translateY(-1px); }
   border: 1px solid var(--card-border);
 }
 
+.secondary-btn {
+  border-radius: 12px;
+}
+
 .ghost-btn:disabled {
   opacity: 0.45;
   cursor: not-allowed;
@@ -332,6 +336,141 @@ button:hover { transform: translateY(-1px); }
   padding-bottom: 30px;
 }
 
+.catalog-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.catalog-heading h1 {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+}
+
+.catalog-count {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.catalog-count span {
+  padding: 0 5px;
+  color: var(--teal);
+}
+
+.category-jump {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 26px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.category-jump a {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 12px;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.025);
+  font-size: 0.8rem;
+}
+
+.category-jump a:hover {
+  border-color: rgba(93, 228, 213, 0.45);
+  color: var(--teal);
+}
+
+.category-jump span,
+.catalog-section-heading > span {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.catalog-list {
+  display: grid;
+  gap: 30px;
+}
+
+.catalog-section {
+  scroll-margin-top: 24px;
+}
+
+.catalog-section-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.catalog-section-heading h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.catalog-game {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  min-height: 190px;
+  padding: 18px;
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--text);
+  text-align: left;
+}
+
+.catalog-game.danger {
+  background: linear-gradient(145deg, rgba(255, 138, 173, 0.1), rgba(255, 255, 255, 0.02));
+}
+
+.catalog-game.success {
+  background: linear-gradient(145deg, rgba(93, 228, 213, 0.1), rgba(255, 255, 255, 0.02));
+}
+
+.catalog-game:hover {
+  border-color: rgba(93, 228, 213, 0.42);
+  transform: translateY(-2px);
+}
+
+.catalog-game .tag {
+  margin-bottom: 14px;
+}
+
+.catalog-game h3 {
+  margin: 0 0 7px;
+  font-size: 1.05rem;
+}
+
+.catalog-game small {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.catalog-launch {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 18px;
+  color: var(--teal);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
 .game-layout {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(220px, 0.7fr);
@@ -356,6 +495,11 @@ button:hover { transform: translateY(-1px); }
   justify-content: space-between;
   gap: 16px;
   margin-bottom: 16px;
+}
+
+.game-header > .secondary-btn {
+  border-radius: 12px;
+  flex-shrink: 0;
 }
 
 .game-header h1 {
@@ -589,6 +733,222 @@ button:hover { transform: translateY(-1px); }
   color: var(--text);
 }
 
+.mines-layout {
+  grid-template-columns: minmax(0, 1.5fr) minmax(240px, 0.7fr);
+}
+
+.mines-shell {
+  min-width: 0;
+}
+
+.mines-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: end;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.mines-controls label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.mines-controls input,
+.mines-controls select {
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  background-color: var(--panel);
+  color: var(--text);
+}
+
+.mines-controls input:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(93, 228, 213, 0.14);
+}
+
+.mines-controls select {
+  appearance: none;
+  color-scheme: dark;
+  padding-right: 42px;
+  background-image: linear-gradient(45deg, transparent 50%, var(--teal) 50%), linear-gradient(135deg, var(--teal) 50%, transparent 50%);
+  background-position: calc(100% - 19px) 50%, calc(100% - 13px) 50%;
+  background-repeat: no-repeat;
+  background-size: 6px 6px, 6px 6px;
+}
+
+.mines-controls select:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(93, 228, 213, 0.14);
+}
+
+.mines-controls select option {
+  background: var(--panel);
+  color: var(--text);
+}
+
+.mines-controls button {
+  min-height: 42px;
+  width: 100%;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+.mines-controls button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+}
+
+.mines-stake-control {
+  width: 100%;
+}
+
+.mines-controls .mines-stake-control input {
+  padding-right: 70px;
+}
+
+.mines-roundbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 74px;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.mines-roundbar p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.mines-stats {
+  display: flex;
+  flex-shrink: 0;
+  gap: 18px;
+}
+
+.mines-stats span {
+  display: grid;
+  gap: 4px;
+}
+
+.mines-stats small {
+  color: var(--muted);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+
+.mines-stats strong {
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.mines-board {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  width: min(500px, 100%);
+  margin: 0 auto;
+}
+
+.mines-tile {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  min-width: 0;
+  padding: 0;
+  border: 1px solid rgba(93, 228, 213, 0.22);
+  border-radius: 10px;
+  background: linear-gradient(145deg, rgba(93, 228, 213, 0.1), rgba(255, 255, 255, 0.025));
+  color: var(--teal);
+  font-size: clamp(1.15rem, 4vw, 1.8rem);
+  font-weight: 800;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.mines-tile:not(:disabled):hover {
+  transform: translateY(-2px);
+  background: rgba(93, 228, 213, 0.18);
+  border-color: rgba(93, 228, 213, 0.62);
+}
+
+.mines-tile:disabled {
+  cursor: default;
+  transform: none;
+}
+
+.mines-tile.revealed {
+  background: rgba(255, 255, 255, 0.035);
+  border-color: var(--card-border);
+}
+
+.mines-tile.safe {
+  color: var(--teal);
+}
+
+.mines-tile.mine {
+  color: var(--rose);
+  background: rgba(255, 138, 173, 0.12);
+  border-color: rgba(255, 138, 173, 0.45);
+}
+
+.mines-tile.diamond {
+  color: var(--amber);
+  background: rgba(255, 210, 138, 0.12);
+  border-color: rgba(255, 210, 138, 0.5);
+}
+
+.mines-tile.exposed {
+  opacity: 0.7;
+}
+
+.mines-rules {
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--card-border);
+}
+
+.mines-rules h2 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+.mines-rules p {
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+.mines-preset {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 9px 0;
+  border-top: 1px solid var(--card-border);
+  font-size: 0.78rem;
+}
+
+.mines-preset span {
+  color: var(--muted);
+}
+
+.mines-preset strong {
+  text-align: right;
+}
+
 .amount-control {
   position: relative;
   display: block;
@@ -760,12 +1120,51 @@ button:hover { transform: translateY(-1px); }
 
   .hero,
   .category-grid,
-  .feature-row {
+  .feature-row,
+  .catalog-grid {
     grid-template-columns: 1fr;
+  }
+
+  .catalog-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
   }
 
   .header-actions {
     width: 100%;
     justify-content: center;
+  }
+
+  .mines-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mines-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 540px) {
+  .mines-shell {
+    padding: 18px 14px;
+  }
+
+  .mines-roundbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .mines-stats {
+    justify-content: space-between;
+    gap: 8px;
+  }
+
+  .mines-stats strong {
+    font-size: 0.78rem;
+  }
+
+  .mines-board {
+    gap: 6px;
   }
 }

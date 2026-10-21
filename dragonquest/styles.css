@@ -165,6 +165,28 @@ h1 {
   box-shadow: 0 16px 32px rgba(30, 53, 43, 0.16);
 }
 
+.canvas-hud {
+  display: flex;
+  min-height: 43px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 0 16px;
+  color: #f2eee0;
+  background: rgba(24, 39, 32, 0.96);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+#canvasSwordStatus {
+  color: #d6dfcf;
+}
+
+#canvasSwordStatus.found,
+#canvasShardStatus {
+  color: #f0d17c;
+}
+
 #gameCanvas {
   display: block;
   width: 100%;
@@ -351,10 +373,9 @@ h1 {
   align-items: center;
   justify-content: center;
   padding: 24px;
-  color: #f2f1e6;
-  background: rgba(25, 40, 34, 0.91);
+  color: #192822;
+  background: transparent;
   text-align: center;
-  animation: victory-wash 700ms ease-out both;
 }
 
 .win-overlay::before {
@@ -397,12 +418,16 @@ h1 {
   animation-delay: 360ms;
 }
 
+.victory-shards span:nth-child(5) {
+  animation-delay: 480ms;
+}
+
 .win-overlay[hidden] {
   display: none;
 }
 
 .win-overlay .eyebrow {
-  color: var(--gold);
+  color: #192822;
   animation: arrive 420ms 250ms ease-out both;
 }
 
@@ -413,12 +438,15 @@ h1 {
 }
 
 .win-overlay p:not(.eyebrow) {
-  color: #d0dbce;
+  color: #192822;
   font-size: 12px;
   animation: arrive 420ms 470ms ease-out both;
 }
 
 .win-overlay .light-button {
+  border-color: #fff;
+  color: #192822;
+  background: #fff;
   animation: arrive 420ms 580ms ease-out both;
 }
 
@@ -446,17 +474,6 @@ button:focus-visible {
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-@keyframes victory-wash {
-  from {
-    background: rgba(25, 40, 34, 0.35);
-    backdrop-filter: blur(0);
-  }
-  to {
-    background: rgba(25, 40, 34, 0.91);
-    backdrop-filter: blur(2px);
   }
 }
 
@@ -533,6 +550,13 @@ button:focus-visible {
 
   .canvas-frame {
     border-width: 3px;
+  }
+
+  .canvas-hud {
+    min-height: 34px;
+    gap: 8px;
+    padding: 0 8px;
+    font-size: 9px;
   }
 
   .win-overlay {

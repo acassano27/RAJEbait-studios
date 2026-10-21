@@ -31,19 +31,24 @@
             <span id="roomLabel">Waystone Hall</span>
             <span class="scene-coordinates">FIELD NOTES <span id="positionLabel">12 : 10</span></span>
           </div>
+          <div class="canvas-hud" aria-label="Room status">
+            <span id="canvasRoomLabel"></span>
+            <span id="canvasShardStatus"></span>
+            <span id="canvasSwordStatus"></span>
+          </div>
           <div class="canvas-frame">
             <canvas id="gameCanvas" width="960" height="720" tabindex="0" aria-label="Game map. Use arrow keys or WASD to move."></canvas>
             <div id="winOverlay" class="win-overlay" hidden>
               <div class="victory-shards" aria-hidden="true">
-                <span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span>
               </div>
-              <p class="eyebrow">The relic is restored</p>
+              <p class="eyebrow">The chalice is home</p>
               <h2>Quest complete</h2>
-              <p>All four chalice shards are yours.</p>
+              <p>You returned the restored chalice to the tallest tower.</p>
               <button id="playAgainButton" class="restart-button light-button" type="button">Play again</button>
             </div>
           </div>
-          <p id="statusMessage" class="status-message" aria-live="polite">The old doors are open. Find the four chalice shards.</p>
+          <p id="statusMessage" class="status-message" aria-live="polite">Find the five chalice shards, then return the restored chalice to the tallest tower in Waystone Hall.</p>
         </section>
 
         <aside class="expedition-panel" aria-label="Expedition status and controls">
@@ -59,6 +64,7 @@
               <span class="shard-mark" data-shard="1"></span>
               <span class="shard-mark" data-shard="2"></span>
               <span class="shard-mark" data-shard="3"></span>
+              <span class="shard-mark" data-shard="4"></span>
             </div>
             <div class="stat-line sword-line">
               <span>Dragon sword</span>
@@ -83,11 +89,11 @@
 
           <section class="field-guide">
             <p class="eyebrow">Field guide</p>
-            <p>Gather each shard and find the magic tunnel in Goblin Grotto. The sword in Crystal Cavern keeps dragons at bay.</p>
+            <p>Gather all five shards, then return the restored chalice to the tallest tower in Waystone Hall. The magic tunnel opens a path through walls, and the sword keeps dragons at bay.</p>
           </section>
         </aside>
       </div>
-      <footer class="page-footer"><span>FOUR SHARDS</span><span>ONE CHALICE</span><span>WATCH THE DRAGONS</span></footer>
+      <footer class="page-footer"><span>FIVE SHARDS</span><span>ONE CHALICE</span><span>WATCH THE DRAGONS</span></footer>
     </main>
     <script src="room-registry.js"></script>
     <script src="rooms/room-hub.js"></script>
